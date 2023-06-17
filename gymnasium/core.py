@@ -532,10 +532,10 @@ class ActionWrapper(Wrapper[ObsType, WrapperActType, ObsType, ActType]):
         Wrapper.__init__(self, env)
 
     def step(
-        self, action: WrapperActType
+        self, action: WrapperActType, task
     ) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
         """Runs the :attr:`env` :meth:`env.step` using the modified ``action`` from :meth:`self.action`."""
-        return self.env.step(self.action(action))
+        return self.env.step(self.action(action), task)
 
     def action(self, action: WrapperActType) -> ActType:
         """Returns a modified action before :meth:`env.step` is called.
