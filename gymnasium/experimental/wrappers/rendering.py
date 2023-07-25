@@ -190,6 +190,8 @@ class RecordVideoV0(
         assert self.recording, "Cannot capture a frame, recording wasn't started."
 
         frame = self.env.render()
+        #print(type(frame))
+        #print(frame) 
         if isinstance(frame, List):
             if len(frame) == 0:  # render was called
                 return
@@ -225,17 +227,17 @@ class RecordVideoV0(
         return obs, info
 
     def step(
-        self, action: ActType
+        self, action: ActType, task
     ) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
         """Steps through the environment using action, recording observations if :attr:`self.recording`."""
-        obs, rew, terminated, truncated, info = self.env.step(action)
+        obs, rew, terminated, truncated, info = self.env.step(action, task)
         self.step_id += 1
 
         if self.step_trigger and self.step_trigger(self.step_id):
             self.start_recording(f"{self.name_prefix}-step-{self.step_id}")
         if self.recording:
             self._capture_frame()
-
+            #print(len(self.recorded_frames))
             if len(self.recorded_frames) > self.video_length:
                 self.stop_recording()
 
@@ -246,6 +248,7 @@ class RecordVideoV0(
         if self.recording:
             self.stop_recording()
 
+        #print('starting recording')
         self.recording = True
         self._video_name = video_name
 
@@ -264,7 +267,7 @@ class RecordVideoV0(
                 ) from e
 
             clip = ImageSequenceClip(self.recorded_frames, fps=self.frames_per_sec)
-            moviepy_logger = None if self.disable_logger else "bar"
+            moviepy_logger = None # if self.disable_logger else "bar"
             path = os.path.join(self.video_folder, f"{self._video_name}.mp4")
             clip.write_videofile(path, logger=moviepy_logger)
 

@@ -78,15 +78,25 @@ class RecordEpisodeStatistics(gym.Wrapper, gym.utils.RecordConstructorArgs):
         self.episode_lengths = np.zeros(self.num_envs, dtype=np.int32)
         return obs, info
 
-    def step(self, action):
+    def step(self, action, task=None):
         """Steps through the environment, recording the episode statistics."""
-        (
-            observations,
-            rewards,
-            terminations,
-            truncations,
-            infos,
-        ) = self.env.step(action)
+        if not task:
+            (
+                observations,
+                rewards,
+                terminations,
+                truncations,
+                infos,
+            ) = self.env.step(action)
+        else:
+            (
+                observations,
+                rewards,
+                terminations,
+                truncations,
+                infos,
+            ) = self.env.step(action, task)
+
         assert isinstance(
             infos, dict
         ), f"`info` dtype is {type(infos)} while supported dtype is `dict`. This may be due to usage of other wrappers in the wrong order."

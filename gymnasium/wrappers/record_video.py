@@ -144,16 +144,24 @@ class RecordVideo(gym.Wrapper, gym.utils.RecordConstructorArgs):
         else:
             return self.episode_trigger(self.episode_id)
 
-    def step(self, action):
+    def step(self, action, task=None):
         """Steps through the environment using action, recording observations if :attr:`self.recording`."""
-        (
-            observations,
-            rewards,
-            terminateds,
-            truncateds,
-            infos,
-        ) = self.env.step(action)
-
+        if not task:
+            (
+                observations,
+                rewards,
+                terminateds,
+                truncateds,
+                infos,
+            ) = self.env.step(action)
+        else:
+            (
+                observations,
+                rewards,
+                terminateds,
+                truncateds,
+                infos,
+            ) = self.env.step(action, task)
         if not (self.terminated or self.truncated):
             # increment steps and episodes
             self.step_id += 1
