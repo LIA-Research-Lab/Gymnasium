@@ -128,9 +128,11 @@ class SyncVectorEnv(VectorEnv):
         )
         return (deepcopy(self.observations) if self.copy else self.observations), infos
 
-    def step_async(self, actions):
+    def step_async(self, actions, tasks):
         """Sets :attr:`_actions` for use by the :meth:`step_wait` by converting the ``actions`` to an iterable version."""
-        self._actions = iterate(self.action_space, actions)
+        self._actions = []
+        for act, task in zip(actions, tasks):
+            self._actions.append((act, task))
 
     def step_wait(self) -> Tuple[Any, NDArray[Any], NDArray[Any], NDArray[Any], dict]:
         """Steps through each of the environments returning the batched results.

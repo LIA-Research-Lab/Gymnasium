@@ -138,7 +138,7 @@ class VectorEnv(gym.Env):
         self.reset_async(seed=seed, options=options)
         return self.reset_wait(seed=seed, options=options)
 
-    def step_async(self, actions):
+    def step_async(self, actions, tasks):
         """Asynchronously performs steps in the sub-environments.
 
         The results can be retrieved via a call to :meth:`step_wait`.
@@ -163,7 +163,7 @@ class VectorEnv(gym.Env):
         raise NotImplementedError()
 
     def step(
-        self, actions
+        self, actions, tasks
     ) -> Tuple[Any, NDArray[Any], NDArray[Any], NDArray[Any], dict]:
         """Take an action for each parallel environment.
 
@@ -199,7 +199,7 @@ class VectorEnv(gym.Env):
             >>> infos
             {}
         """
-        self.step_async(actions)
+        self.step_async(actions, tasks)
         return self.step_wait()
 
     def call_async(self, name, *args, **kwargs):

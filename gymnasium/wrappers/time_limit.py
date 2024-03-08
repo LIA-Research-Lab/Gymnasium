@@ -43,7 +43,7 @@ class TimeLimit(gym.Wrapper, gym.utils.RecordConstructorArgs):
         self._max_episode_steps = max_episode_steps
         self._elapsed_steps = None
 
-    def step(self, action, task):
+    def step(self, action):
         """Steps through the environment and if the number of steps elapsed exceeds ``max_episode_steps`` then truncate.
 
         Args:
@@ -54,7 +54,7 @@ class TimeLimit(gym.Wrapper, gym.utils.RecordConstructorArgs):
             if the number of steps elapsed >= max episode steps
 
         """
-        observation, reward, terminated, truncated, info = self.env.step(action, task)
+        observation, reward, terminated, truncated, info = self.env.step(action)
         self._elapsed_steps += 1
 
         if self._elapsed_steps >= self._max_episode_steps:

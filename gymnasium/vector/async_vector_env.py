@@ -262,7 +262,7 @@ class AsyncVectorEnv(VectorEnv):
 
         return (deepcopy(self.observations) if self.copy else self.observations), infos
 
-    def step_async(self, actions: np.ndarray):
+    def step_async(self, actions: np.ndarray, tasks: np.ndarray):
         """Send the calls to :obj:`step` to each sub-environment.
 
         Args:
@@ -283,8 +283,8 @@ class AsyncVectorEnv(VectorEnv):
             )
 
         actions = iterate(self.action_space, actions)
-        for pipe, action in zip(self.parent_pipes, actions):
-            pipe.send(("step", action))
+        for pipe, action, task in zip(self.parent_pipes, actions, tasks):
+            pipe.send(("step", action, task))
         self._state = AsyncState.WAITING_STEP
 
     def step_wait(
@@ -320,6 +320,7 @@ class AsyncVectorEnv(VectorEnv):
         successes = []
         for i, pipe in enumerate(self.parent_pipes):
             result, success = pipe.recv()
+            print(result, success)
             successes.append(success)
             if success:
                 obs, rew, terminated, truncated, info = result

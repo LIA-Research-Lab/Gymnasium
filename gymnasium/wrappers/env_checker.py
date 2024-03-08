@@ -40,13 +40,13 @@ class PassiveEnvChecker(gym.Wrapper, gym.utils.RecordConstructorArgs):
         self.checked_step = False
         self.checked_render = False
 
-    def step(self, action: ActType, task):
+    def step(self, action: ActType):
         """Steps through the environment that on the first call will run the `passive_env_step_check`."""
         if self.checked_step is False:
             self.checked_step = True
-            return env_step_passive_checker(self.env, action, task)
+            return env_step_passive_checker(self.env, action)
         else:
-            return self.env.step(action, task)
+            return self.env.step(action)
 
     def reset(self, **kwargs):
         """Resets the environment that on the first call will run the `passive_env_reset_check`."""
