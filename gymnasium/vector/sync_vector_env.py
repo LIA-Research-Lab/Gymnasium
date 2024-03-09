@@ -142,6 +142,7 @@ class SyncVectorEnv(VectorEnv):
         """
         observations, infos = [], {}
         for i, (env, action) in enumerate(zip(self.envs, self._actions)):
+            print(action)
             (
                 observation,
                 self._rewards[i],

@@ -284,7 +284,7 @@ class AsyncVectorEnv(VectorEnv):
 
         actions = iterate(self.action_space, actions)
         for pipe, action, task in zip(self.parent_pipes, actions, tasks):
-            pipe.send(("step", action, task))
+            pipe.send(("step", (action, task)))
         self._state = AsyncState.WAITING_STEP
 
     def step_wait(
@@ -320,7 +320,6 @@ class AsyncVectorEnv(VectorEnv):
         successes = []
         for i, pipe in enumerate(self.parent_pipes):
             result, success = pipe.recv()
-            print(result, success)
             successes.append(success)
             if success:
                 obs, rew, terminated, truncated, info = result
