@@ -142,14 +142,13 @@ class SyncVectorEnv(VectorEnv):
         """
         observations, infos = [], {}
         for i, (env, action) in enumerate(zip(self.envs, self._actions)):
-            print(action)
             (
                 observation,
                 self._rewards[i],
                 self._terminateds[i],
                 self._truncateds[i],
                 info,
-            ) = env.step(action)
+            ) = env.step(action if action[-1] else action[0])
 
             if self._terminateds[i] or self._truncateds[i]:
                 old_observation, old_info = observation, info

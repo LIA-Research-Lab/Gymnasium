@@ -284,7 +284,10 @@ class AsyncVectorEnv(VectorEnv):
 
         actions = iterate(self.action_space, actions)
         for pipe, action, task in zip(self.parent_pipes, actions, tasks):
-            pipe.send(("step", (action, task)))
+            if task:
+                pipe.send(("step", (action, task)))
+            else:
+                pipe.send(("step", action))
         self._state = AsyncState.WAITING_STEP
 
     def step_wait(
